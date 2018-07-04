@@ -1837,7 +1837,10 @@ var travel = function () {
                 if(response.success){
                     self.action_form = self.current_url+"index.php/customers/updateClient";
                     var data = response.data;
-                    var data_client = JSON.parse(data.data);
+                    var data_client = '';
+                    if(data.data != ''){
+                        var data_client = JSON.parse(data.data);
+                    }
                     $("#client_id").val(id);
                     $("#first_name").val(data.firstname);
                     $("#midle_name").val(data.middlename);
@@ -1848,38 +1851,41 @@ var travel = function () {
                     $("#age").val(data.age);
                     $("#date_expire").val(data.fec_nac);
                     //MAKE TABLE DOCUMENTS
-                    self.customer_documents_list = data_client.documents;
-                    self.makeTableDocuments();
-                    //MAKE TABLE PASSPORT
-                    self.customer_passport_list = data_client.passport;
-                    self.makeTablePassport();
-                    //MAKE TABLE VISADO
-                    self.customer_visado_list = data_client.visado;
-                    self.makeTableVisado();
-                    //MAKE TABLE PHONES
-                    self.customer_phones_list = data_client.phones;
-                    self.makeTablePhones();
-                    //MAKE TABLE EMAILS
-                    self.customer_emails_list = data_client.emails;
-                    self.makeTableEmails();
-                    //MAKE TABLE CLIENTES FRECUENTES
-                    self.customer_frec_list = data_client.frec;
-                    self.makeTableFrec();
-                    //MAKE TABLE ADDRESS
-                    self.customer_address_list = data_client.address;
-                    self.makeTableAddress();
-                    //MAKE TABLE COMPANY
-                    self.customer_company_list = data_client.company;
-                    self.makeTableCompany();
-                    //MAKE TABLE CONTACT
-                    self.customer_contact_list = data_client.contact;
-                    self.makeTableContact();
-                    //MAKE TABLE CARDS
-                    self.customer_tarjtas_list = data_client.tarjtas;
-                    self.makeTableTarjetas();
-                    //MAKE TABLE FAMILIARES
-                    self.customer_familiares_list = data_client.familiares;
-                    self.makeTableDatosFamilares();
+                    if(data_client != ''){
+                        self.customer_documents_list = data_client.documents;
+                        self.makeTableDocuments();
+                        //MAKE TABLE PASSPORT
+                        self.customer_passport_list = data_client.passport;
+                        self.makeTablePassport();
+                        //MAKE TABLE VISADO
+                        self.customer_visado_list = data_client.visado;
+                        self.makeTableVisado();
+                        //MAKE TABLE PHONES
+                        self.customer_phones_list = data_client.phones;
+                        self.makeTablePhones();
+                        //MAKE TABLE EMAILS
+                        self.customer_emails_list = data_client.emails;
+                        self.makeTableEmails();
+                        //MAKE TABLE CLIENTES FRECUENTES
+                        self.customer_frec_list = data_client.frec;
+                        self.makeTableFrec();
+                        //MAKE TABLE ADDRESS
+                        self.customer_address_list = data_client.address;
+                        self.makeTableAddress();
+                        //MAKE TABLE COMPANY
+                        self.customer_company_list = data_client.company;
+                        self.makeTableCompany();
+                        //MAKE TABLE CONTACT
+                        self.customer_contact_list = data_client.contact;
+                        self.makeTableContact();
+                        //MAKE TABLE CARDS
+                        self.customer_tarjtas_list = data_client.tarjtas;
+                        self.makeTableTarjetas();
+                        //MAKE TABLE FAMILIARES
+                        self.customer_familiares_list = data_client.familiares;
+                        self.makeTableDatosFamilares();
+                    }
+                    
                     $("#modal_customer").modal("show");
                 }
             }
