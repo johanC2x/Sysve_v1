@@ -1664,12 +1664,15 @@ var travel = function () {
                                         <td>`+data[i].fec_nac+`</td>
                                         <td>
                                             <center>
+                                                <a href="javascript:void(0);" onclick="travel.getClient(`+id+`);">
+                                                    Editar
+                                                </a>
                                             </center>
                                         </td>
                                         <td>
                                             <center>
-                                                <a href="javascript:void(0);" onclick="travel.addCoti(`+id+`);">
-                                                    Agregar Cotización
+                                                <a href="javascript:void(0);" onclick="travel.deleteClient(`+id+`,false);">
+                                                    Eliminar
                                                 </a>
                                             </center>
                                         </td>
