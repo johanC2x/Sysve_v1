@@ -18,6 +18,7 @@ var travel = function () {
         customer_frec_list : [],
         customer_familiares_list: [],
         customer_tarjtas_list: [],
+        customer_description: '',
         action_form: "",
         current_id: 0
     };
@@ -1512,6 +1513,12 @@ var travel = function () {
         $("#table_customer_company").append(html);
     };
 
+    self.saveDescripcion = function(){
+        var descripcion = $('#descripcion').val() || '';
+        console.log(descripcion);
+        self.customer_description = descripcion;
+    };
+
     self.saveFamiliar = function(){
         var relacion = $("#contact_familiar_relacion").val();
         var nombre = $("#contact_familiar_nombre").val();
@@ -1853,6 +1860,7 @@ var travel = function () {
                     $("#gender").val(data.gender);
                     $("#age").val(data.age);
                     $("#date_expire").val(data.fec_nac);
+                    console.log(data);
                     //MAKE TABLE DOCUMENTS
                     if(data_client != ''){
                         self.customer_documents_list = data_client.documents;
@@ -1887,6 +1895,8 @@ var travel = function () {
                         //MAKE TABLE FAMILIARES
                         self.customer_familiares_list = data_client.familiares;
                         self.makeTableDatosFamilares();
+                        console.log(data_client.description);
+                        $("#descripcion").val(data_client.description);
                     }
                     
                     $("#modal_customer").modal("show");

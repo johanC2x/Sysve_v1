@@ -243,6 +243,7 @@
             e.preventDefault();
             $("#btn_save_customer").prop("disabled", false);
             var data = {};
+            travel.saveDescripcion();
             data.address = travel.customer_address_list;
             data.passport = travel.customer_passport_list;
             data.card = travel.customer_card_list;
@@ -256,6 +257,7 @@
             data.familiares = travel.customer_familiares_list;
             data.asiento = travel.preferencia_asiento_list;
             data.tarjtas = travel.customer_tarjtas_list;
+            data.description = travel.customer_description;
             $("#client_data").val(JSON.stringify(data));
             $.ajax({
                 type:"POST",

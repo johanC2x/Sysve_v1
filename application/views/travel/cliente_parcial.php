@@ -160,6 +160,7 @@ $(document).ready(function() {
     e.preventDefault();
     $("#btn_save_customer").prop("disabled", false);
     var data = {};
+    travel.saveDescripcion();
     data.address = travel.customer_address_list;
     data.passport = travel.customer_passport_list;
     data.card = travel.customer_card_list;

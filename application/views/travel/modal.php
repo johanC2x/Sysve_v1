@@ -726,6 +726,14 @@
                 </table>
               </fieldset>
             </div>
+            <div class="col-md-12">
+              <fieldset>
+                <legend>Descripción</legend>
+                <div class="form-group">
+                  <textarea id="descripcion" class="form-control" style="height: 150px;"></textarea>
+                </div>
+              </fieldset>
+            </div>
             <!-- ===================================== -->
             <div id="messages" class="col-md-12"></div>
           </div>
