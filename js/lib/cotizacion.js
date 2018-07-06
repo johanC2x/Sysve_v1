@@ -18,19 +18,20 @@ var cotizacion = function () {
         customer_frec_list : [],
         customer_familiares_list: [],
         customer_tarjtas_list: [],
+        customer_description: '',
         action_form: "",
         current_id: 0
     };
 
     self.changeRow = function(idObj){
-    	var open = $("#row_travel_"+idObj).is(':visible');
-    	if(!open){
-    		$("#row_travel_"+idObj).show();
-    		$("#row_open_"+idObj).html('<i class="fa fa-angle-down"></i>');
-    	}else{
-    		$("#row_travel_"+idObj).hide();
-    		$("#row_open_"+idObj).html('<i class="fa fa-angle-right"></i>');
-    	}
+        var open = $("#row_travel_"+idObj).is(':visible');
+        if(!open){
+            $("#row_travel_"+idObj).show();
+            $("#row_open_"+idObj).html('<i class="fa fa-angle-down"></i>');
+        }else{
+            $("#row_travel_"+idObj).hide();
+            $("#row_open_"+idObj).html('<i class="fa fa-angle-right"></i>');
+        }
     };
 
     self.setCustomerFilter = function(){
@@ -336,8 +337,8 @@ var cotizacion = function () {
         $('.table.table-hover.table-bordered').append(row);
         $('#result').html('');
     }
-
-        self.addComision = function(val){
+    
+        self.addComision = function(val = null){
         var data = {};
         data.key = $("#cbo_comision_payment option:selected").attr("data-key");
         data.name = $("#cbo_comision_payment option:selected").text();
@@ -691,7 +692,7 @@ var cotizacion = function () {
                         notEmpty: { message: "El campo pasaporte es requerido."}
                     }
                 },
-                date_expire: {
+                user_date: {
                     validators: {
                         notEmpty: { message: "El campo fecha de expiración es requerido."}
                     }
@@ -1442,13 +1443,32 @@ var cotizacion = function () {
 
     self.saveCustomerCompany = function(){
         var company_ruc = $("#company_customer_ruc").val();
+        var company_name = $("#company_customer_name").val();
+        var company_mail = $("#company_customer_mail").val();
+
+        var company_address = $("#company_customer_address").val();
+        var company_district = $("#company_customer_district").val();
+        var company_phone = $("#company_customer_phone").val();
+        var company_reference = $("#company_customer_reference").val();
 
         if(company_ruc !== '' && company_name !== '' && company_mail !== ''){
             self.customer_company_list.push({
                 ruc : company_ruc,
+                name : company_name,
+                mail : company_mail,
+                reference :company_reference,
+                phone : company_phone,
+                district : company_district,
+                address : company_address
             });
 
             $("#company_customer_ruc").val("");
+            $("#company_customer_name").val("");
+            $("#company_customer_mail").val("");
+            $("#company_customer_address").val("");
+            $("#company_customer_district").val("");
+            $("#company_customer_phone").val("");
+            $("#company_customer_reference").val("");
 
             self.makeTableCompany();
         }
@@ -1459,28 +1479,6 @@ var cotizacion = function () {
         self.makeTableCompany();
     };
 
-    self.setCustomerFilter = function(){
-        var val = $('#search_value').val();
-       var current = $('#list_travel_search').find('option[value="'+val+'"]').data('id');
-       if(current !== null){
-        $.ajax({
-            type:"POST",
-            data:{
-                "person_id" : current
-            },
-            url: travel.current_url + "index.php/travel/info",
-            success:function(response){
-                var data = JSON.parse(response);
-                console.log(data);
-                if(data.success){
-                    self.list_customer.push(data.data);
-                    self.populateTable();
-                }
-            }
-        });
-       }
-    };
-
     self.makeTableCompany = function(){
         var html = '';
         $("#table_customer_company tbody").empty();
@@ -1488,6 +1486,12 @@ var cotizacion = function () {
             for(var i = 0;i < self.customer_company_list.length; i++){
                 html += `<tr>
                             <td><center>`+ self.customer_company_list[i].ruc +`</center></td>
+                            <td><center>`+ self.customer_company_list[i].name +`</center></td>
+                            <td><center>`+ self.customer_company_list[i].mail +`</center></td>
+                            <td><center>`+ self.customer_company_list[i].address +`</center></td>
+                            <td><center>`+ self.customer_company_list[i].district +`</center></td>
+                            <td><center>`+ self.customer_company_list[i].phone +`</center></td>
+                            <td><center>`+ self.customer_company_list[i].reference +`</center></td>
                             <td>
                                 <a href="javascript:void(0);" onclick="travel.removeCustomerCompany(`+i+`);">
                                     <center>
@@ -1507,6 +1511,12 @@ var cotizacion = function () {
                     </tr>`;
         }
         $("#table_customer_company").append(html);
+    };
+
+    self.saveDescripcion = function(){
+        var descripcion = $('#descripcion').val() || '';
+        console.log(descripcion);
+        self.customer_description = descripcion;
     };
 
     self.saveFamiliar = function(){
@@ -1633,6 +1643,7 @@ var cotizacion = function () {
         })
     };
 
+
     self.listClients = function(){
         $.ajax({
             type:'POST',
@@ -1643,6 +1654,7 @@ var cotizacion = function () {
                 if(res.success){
                     var tbody = "";
                     var data = res.data;
+                    //var data_client = JSON.parse(data.data);
                     $("#table_clients tbody").empty();
                     if(data.length > 0){
                         for(var i = 0;i < data.length;i++){
@@ -1650,16 +1662,29 @@ var cotizacion = function () {
                             var nombres = data[i].firstname + ' ' + data[i].middlename;
                             var apellidos = data[i].lastname + ' ' + data[i].mother_lastname;
                             var genero = (data[i].gender === 'M') ? 'MASCULINO' : 'FEMENINO';
+
+                            //BUSCANDO VALORES EN DATA DE CLIENTES
+                            var data_client = JSON.parse(data[i].data);
+                            
+                            var document = data_client.documents.find(x => x.type_document === "dni");
+                            var email = data_client.emails.find(x => x.type_email === "personal");
+                            var phones = data_client.phones.find(x => x.type_phone === "celular_personal");
+                            //VALIDANDO VALORES VACIOS
+                            var val_doc = (document !== undefined && document.nro_doc !== "") ? document.nro_doc : "SIN DOCUMENTO";
+                            var val_email = (email !== undefined && email.email !== "") ? email.email : "FALTA INFORMACION";
+                            var val_phone = (phones !== undefined && phones.nro_phone !== "") ? phones.nro_phone : "FALTA INFORMACION";
+
                             tbody += `<tr>
                                         <td>`+nombres+`</td>
                                         <td>`+apellidos+`</td>
-                                        <td>`+data[i].age+`</td>
+                                        <td>`+val_doc+`</td>
                                         <td>`+genero+`</td>
-                                        <td>`+data[i].fec_nac+`</td>
+                                        <td>`+val_email+`</td>
+                                        <td>`+val_phone+`</td>
                                         <td>
                                             <center>
                                                 <a href="javascript:void(0);" onclick="travel.getClient(`+id+`);">
-                                                    Cotizar
+                                                    Editar
                                                 </a>
                                             </center>
                                         </td>
@@ -1674,7 +1699,7 @@ var cotizacion = function () {
                         }
                     }else{
                         tbody = `<tr>
-                                    <td colspan="6">
+                                    <td colspan="7">
                                         <center>
                                             NO SE ENCONTRARON RESULTADOS
                                         </center>
@@ -1687,7 +1712,8 @@ var cotizacion = function () {
         });
     };
 
-    self.listClientsCoti = function(){
+/*
+    self.listClients = function(){
         $.ajax({
             type:'POST',
             data:{},
@@ -1717,13 +1743,84 @@ var cotizacion = function () {
                             var val_doc = (document.nro_doc !== "") ? document.nro_doc : "";
                             var val_email = (email.email !== "") ? email.email : "";
                             var val_phone = (phones.nro_phone !== "") ? phones.nro_phone : "";
+
                             tbody += `<tr>
                                         <td><center>`+nombres+`</center></td>
                                         <td><center>`+apellidos+`</center></td>
-                                        <td><center>`+data[i].age+`</center></td>
-                                        <td><center>`+ val_doc +`</center></td>
-                                        <td><center>`+ val_email +`</center></td>
-                                        <td><center>`+ val_phone +`</center></td>
+                                        <td><center>`+val_doc+`</center></td>
+                                        <td><center>`+genero+`</center></td>
+                                        <td><center>`+val_email+`</center></td>
+                                        <td><center>`+val_phone+`</center></td>
+                                        <td>
+                                            <center>
+                                                <a href="javascript:void(0);" onclick="travel.getClient(`+id+`);">
+                                                    Editar
+                                                </a>
+                                            </center>
+                                        </td>
+                                        <td>
+                                            <center>
+                                                <a href="javascript:void(0);" onclick="travel.deleteClient(`+id+`,false);">
+                                                    Eliminar
+                                                </a>
+                                            </center>
+                                        </td>
+                                    </tr>`;
+                        }
+                    }else{
+                        tbody = `<tr>
+                                    <td colspan="7">
+                                        <center>
+                                            NO SE ENCONTRARON RESULTADOS
+                                        </center>
+                                    </td>
+                                </tr>`;
+                    }
+                    $("#table_clients tbody").append(tbody);
+                }
+            }
+        });
+    };
+*/
+
+
+    self.listClientsCoti = function(){
+        $.ajax({
+            type:'POST',
+            data:{},
+            url:self.current_url+"index.php/customers/listClients",
+            success:function(response){
+                var res = JSON.parse(response);
+                if(res.success){
+                    var tbody = "";
+                    var data = res.data;
+                    //var data_client = JSON.parse(data.data);
+                    $("#table_clients tbody").empty();
+                    if(data.length > 0){
+                        for(var i = 0;i < data.length;i++){
+                            var id = data[i].id;
+                            var nombres = data[i].firstname + ' ' + data[i].middlename;
+                            var apellidos = data[i].lastname + ' ' + data[i].mother_lastname;
+                            var genero = (data[i].gender === 'M') ? 'MASCULINO' : 'FEMENINO';
+
+                            //BUSCANDO VALORES EN DATA DE CLIENTES
+                            var data_client = JSON.parse(data[i].data);
+                            
+                            var document = data_client.documents.find(x => x.type_document === "dni");
+                            var email = data_client.emails.find(x => x.type_email === "personal");
+                            var phones = data_client.phones.find(x => x.type_phone === "celular_personal");
+                            //VALIDANDO VALORES VACIOS
+                            var val_doc = (document !== undefined && document.nro_doc !== "") ? document.nro_doc : "SIN DOCUMENTO";
+                            var val_email = (email !== undefined && email.email !== "") ? email.email : "FALTA INFORMACION";
+                            var val_phone = (phones !== undefined && phones.nro_phone !== "") ? phones.nro_phone : "FALTA INFORMACION";
+
+                            tbody += `<tr>
+                                        <td>`+nombres+`</td>
+                                        <td>`+apellidos+`</td>
+                                        <td>`+val_doc+`</td>
+                                        <td>`+genero+`</td>
+                                        <td>`+val_email+`</td>
+                                        <td>`+val_phone+`</td>
                                         <td>
                                             <center>
                                                 <a href="javascript:void(0);" onclick="travel.addCoti(`+id+`);">
@@ -1748,6 +1845,9 @@ var cotizacion = function () {
         });
     };
 
+    self.addCoti = function(id){
+        console.log(id);
+    };
 
     self.openModal = function(){
         self.cleanForm();
@@ -1767,7 +1867,10 @@ var cotizacion = function () {
                 if(response.success){
                     self.action_form = self.current_url+"index.php/customers/updateClient";
                     var data = response.data;
-                    var data_client = JSON.parse(data.data);
+                    var data_client = '';
+                    if(data.data != ''){
+                        var data_client = JSON.parse(data.data);
+                    }
                     $("#client_id").val(id);
                     $("#first_name").val(data.firstname);
                     $("#midle_name").val(data.middlename);
@@ -1776,40 +1879,46 @@ var cotizacion = function () {
                     $("#last_name_casada").val(data.last_name_casada);
                     $("#gender").val(data.gender);
                     $("#age").val(data.age);
-                    $("#date_expire").val(data.fec_nac);
+                    $("#user_date").val(data.fec_nac);
+                    console.log(data);
                     //MAKE TABLE DOCUMENTS
-                    self.customer_documents_list = data_client.documents;
-                    self.makeTableDocuments();
-                    //MAKE TABLE PASSPORT
-                    self.customer_passport_list = data_client.passport;
-                    self.makeTablePassport();
-                    //MAKE TABLE VISADO
-                    self.customer_visado_list = data_client.visado;
-                    self.makeTableVisado();
-                    //MAKE TABLE PHONES
-                    self.customer_phones_list = data_client.phones;
-                    self.makeTablePhones();
-                    //MAKE TABLE EMAILS
-                    self.customer_emails_list = data_client.emails;
-                    self.makeTableEmails();
-                    //MAKE TABLE CLIENTES FRECUENTES
-                    self.customer_frec_list = data_client.frec;
-                    self.makeTableFrec();
-                    //MAKE TABLE ADDRESS
-                    self.customer_address_list = data_client.address;
-                    self.makeTableAddress();
-                    //MAKE TABLE COMPANY
-                    self.customer_company_list = data_client.company;
-                    self.makeTableCompany();
-                    //MAKE TABLE CONTACT
-                    self.customer_contact_list = data_client.contact;
-                    self.makeTableContact();
-                    //MAKE TABLE CARDS
-                    self.customer_tarjtas_list = data_client.tarjtas;
-                    self.makeTableTarjetas();
-                    //MAKE TABLE FAMILIARES
-                    self.customer_familiares_list = data_client.familiares;
-                    self.makeTableDatosFamilares();
+                    if(data_client != ''){
+                        self.customer_documents_list = data_client.documents;
+                        self.makeTableDocuments();
+                        //MAKE TABLE PASSPORT
+                        self.customer_passport_list = data_client.passport;
+                        self.makeTablePassport();
+                        //MAKE TABLE VISADO
+                        self.customer_visado_list = data_client.visado;
+                        self.makeTableVisado();
+                        //MAKE TABLE PHONES
+                        self.customer_phones_list = data_client.phones;
+                        self.makeTablePhones();
+                        //MAKE TABLE EMAILS
+                        self.customer_emails_list = data_client.emails;
+                        self.makeTableEmails();
+                        //MAKE TABLE CLIENTES FRECUENTES
+                        self.customer_frec_list = data_client.frec;
+                        self.makeTableFrec();
+                        //MAKE TABLE ADDRESS
+                        self.customer_address_list = data_client.address;
+                        self.makeTableAddress();
+                        //MAKE TABLE COMPANY
+                        self.customer_company_list = data_client.company;
+                        self.makeTableCompany();
+                        //MAKE TABLE CONTACT
+                        self.customer_contact_list = data_client.contact;
+                        self.makeTableContact();
+                        //MAKE TABLE CARDS
+                        self.customer_tarjtas_list = data_client.tarjtas;
+                        self.makeTableTarjetas();
+                        //MAKE TABLE FAMILIARES
+                        self.customer_familiares_list = data_client.familiares;
+                        self.makeTableDatosFamilares();
+                        console.log(data_client.description);
+                        $("#descripcion").val(data_client.description);
+                    }
+                    
                     $("#modal_customer").modal("show");
                 }
             }
@@ -1825,7 +1934,7 @@ var cotizacion = function () {
         $("#last_name_casada").val("");
         $("#gender").val("");
         $("#age").val("");
-        $("#date_expire").val(now);
+        $("#user_date").val(now);
         //MAKE TABLE DOCUMENTS
         self.customer_documents_list = [];
         self.makeTableDocuments();
@@ -1888,81 +1997,5 @@ var cotizacion = function () {
         }
     };
 
-	return self;
+    return self;
 }(jQuery);
-
-
-function isValidDate(day,month,year)
-
-{
-    var dteDate;
-    month=month-1;
-    dteDate=new Date(year,month,day);
-    return ((day==dteDate.getDate()) && (month==dteDate.getMonth()) && (year==dteDate.getFullYear()));
-}
-
-function validate_fecha(fecha)
-{
-    var patron=new RegExp("^(19|20)+([0-9]{2})([-])([0-9]{1,2})([-])([0-9]{1,2})$");
-    if(fecha.search(patron)==0)
-    {
-        var values=fecha.split("-");
-        if(isValidDate(values[2],values[1],values[0]))
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-function calcularEdad()
-{
-    var fecha=document.getElementById("user_date").value;
-    if(validate_fecha(fecha)==true)
-    {
-        var values=fecha.split("-");
-        var dia = values[2];
-        var mes = values[1];
-        var ano = values[0];
-        var fecha_hoy = new Date();
-        var ahora_ano = fecha_hoy.getYear();
-        var ahora_mes = fecha_hoy.getMonth()+1;
-        var ahora_dia = fecha_hoy.getDate();
-        var edad = (ahora_ano + 1900) - ano;
-        if ( ahora_mes < mes )
-        {
-            edad--;
-        }
-        if ((mes == ahora_mes) && (ahora_dia < dia))
-        {
-            edad--;
-        }
-        if (edad > 1900)
-        {
-            edad -= 1900;
-        }
-        // calculamos los meses
-        var meses=0;
-        if(ahora_mes>mes)
-            meses=ahora_mes-mes;
-        if(ahora_mes<mes)
-            meses=12-(mes-ahora_mes);
-        if(ahora_mes==mes && dia>ahora_dia)
-            meses=11;
- 
-        // calculamos los dias
-
-        var dias=0;
-        if(ahora_dia>dia)
-            dias=ahora_dia-dia;
-        if(ahora_dia<dia)
-        {
-            ultimoDiaMes=new Date(ahora_ano, ahora_mes, 0);
-            dias=ultimoDiaMes.getDate()-(dia-ahora_dia);
-        }
- 
-        document.getElementById("result").innerHTML=""+edad+" años";
-    }else{
-        document.getElementById("result").innerHTML="La fecha "+fecha+" es incorrecta";
-    }
-}
