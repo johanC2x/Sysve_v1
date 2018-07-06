@@ -726,15 +726,59 @@
                 </table>
               </fieldset>
             </div>
+            <!-- ===================================== -->
+
+            <!-- =========== FORM OBSERVACIONES ============ -->
             <div class="col-md-12">
               <fieldset>
-                <legend>Descripción</legend>
-                <div class="form-group">
-                  <textarea id="descripcion" class="form-control" style="height: 150px;"></textarea>
+                <legend>Observaciones</legend>
+                <div class="col-md-4">
+                  <div class="form-group" >
+                    <label for="observaciones">Comentarios:</label>
+                    <input type="text" id="observaciones" name="observaciones" class="form-control">
+                  </div>
                 </div>
+                <div class="col-md-4">
+                  <div class="form-group" >
+                    <label for="fecha">Fecha:</label>
+                    <input type="text" id="fecha" name="fecha" class="form-control">
+                  </div>  
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group" >
+                    <label for="asesor">Asesor:</label>
+                    <input type="text" id="asesor" name="asesor" class="form-control">
+                  </div>  
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <button id="btn_add_observaciones" type="button" class="btn btn-primary">Agregar</button>
+                  </div>
+                </div>
+                <table id="table_observaciones" class="table table-hover table-bordered" >
+                  <thead>
+                    <tr>
+                      <th class="col-md-1"><center>Comentario</center></th>
+                      <th class="col-md-4"><center>Fecha</center></th>
+                      <th class="col-md-2"><center>Asesor</center></th>
+                      <th colspan="3" class="col-md-1"><center>Acción</center></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colspan="4">
+                        <center>
+                          No se registraron datos.
+                        </center>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </fieldset>
             </div>
             <!-- ===================================== -->
+
+
             <div id="messages" class="col-md-12"></div>
           </div>
           <button type="submit" class="btn btn-primary">Guardar</button>

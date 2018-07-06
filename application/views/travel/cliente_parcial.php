@@ -160,7 +160,6 @@ $(document).ready(function() {
     e.preventDefault();
     $("#btn_save_customer").prop("disabled", false);
     var data = {};
-    travel.saveDescripcion();
     data.address = travel.customer_address_list;
     data.passport = travel.customer_passport_list;
     data.card = travel.customer_card_list;
@@ -466,19 +465,21 @@ function post_person_form_submit(response)
                 <legend>Observaciones</legend>
                   <div class="col-md-10">
                     <div class="form-group" >
-                      <label for="company_customer_ruc">Observaciones:</label>
-                      <textarea type="text" id="company_customer_ruc" name="company_customer_ruc" class="form-control"></textarea>
+                      <label for="company_customer_obser">Observaciones:</label>
+                      <textarea type="text" id="company_customer_obser" name="company_customer_obser" class="form-control"></textarea>
                     </div>  
                   </div>
+                      <input type="hidden" id="company_customer_obser" name="company_customer_obser" class="form-control"></>
+                      <input type="hidden" id="company_customer_obser" name="company_customer_obser" class="form-control"></>
                   <div class="col-md-2">
                     <div class="form-group">
                             <label for="">&nbsp;</label>
                         <div class="form-group">
-                            <button id="btn_add_customer_company" type="button" class="btn btn-primary">Agregar</button>
+                            <button id="btn_add_customer_obser" type="button" class="btn btn-primary">Agregar</button>
                         </div>
                     </div>
                   </div>
-                <table id="table_customer_company" class="table table-hover table-bordered" >
+                <table id="table_customer_obser" class="table table-hover table-bordered" >
                   <thead>
                     <tr>
                       <th class="col-md-8"><center>Observaciones</center></th>
