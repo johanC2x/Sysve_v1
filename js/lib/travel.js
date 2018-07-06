@@ -18,20 +18,20 @@ var travel = function () {
         customer_frec_list : [],
         customer_familiares_list: [],
         customer_tarjtas_list: [],
-        customer_description: '',
+        customer_observaciones_list: [],
         action_form: "",
         current_id: 0
     };
 
     self.changeRow = function(idObj){
-    	var open = $("#row_travel_"+idObj).is(':visible');
-    	if(!open){
-    		$("#row_travel_"+idObj).show();
-    		$("#row_open_"+idObj).html('<i class="fa fa-angle-down"></i>');
-    	}else{
-    		$("#row_travel_"+idObj).hide();
-    		$("#row_open_"+idObj).html('<i class="fa fa-angle-right"></i>');
-    	}
+        var open = $("#row_travel_"+idObj).is(':visible');
+        if(!open){
+            $("#row_travel_"+idObj).show();
+            $("#row_open_"+idObj).html('<i class="fa fa-angle-down"></i>');
+        }else{
+            $("#row_travel_"+idObj).hide();
+            $("#row_open_"+idObj).html('<i class="fa fa-angle-right"></i>');
+        }
     };
 
     self.setCustomerFilter = function(){
@@ -1439,6 +1439,69 @@ var travel = function () {
 
     /* =================================================================== */
 
+
+    /* ================ SET TABLE FOR OBSERVACIONES ============ */
+
+    self.saveObservaciones = function(){
+        var observaciones = $("#observaciones").val();
+        var fecha = $("#fecha").val();
+        var asesor = $("#asesor").val();
+
+        if(observaciones !== '' && fecha !== '' && asesor !== ''){
+            self.customer_observaciones_list.push({
+                observaciones : observaciones,
+                fecha : fecha,
+                asesor : asesor,
+            });
+
+            $("#observaciones").val("");
+            $("#fecha").val("");
+            $("#asesor").val("");
+
+            self.makeTableObservaciones();
+        }
+    };
+
+    self.makeTableObservaciones = function(){
+        var tbody = '';
+        $("#table_observaciones tbody").empty();
+        if(self.customer_observaciones_list.length > 0){
+            for(var i = 0;i < self.customer_observaciones_list.length; i++){
+                tbody += `<tr>
+                            <td><center>`+ self.customer_observaciones_list[i].observaciones +`</center></td>
+                            <td><center>`+ self.customer_observaciones_list[i].fecha +`</center></td>                            
+                            <td><center>`+ self.customer_observaciones_list[i].asesor +`</center></td>
+                            <td>
+                                <a href="javascript:void(0);" onclick="travel.removeObservaciones(`+i+`);">
+                                    <center>
+                                        <i class="fa fa-trash"></i>
+                                    </center>
+                                </a>
+                            </td>
+                        </tr>`;
+            }
+        }else{
+            tbody += `<tr>
+                        <td colspan="6">
+                            <center>
+                                No se registraron datos.
+                            </center>
+                        </td>
+                    </tr>`;
+        }
+        $("#table_observaciones tbody").append(tbody);
+    };
+
+    self.removeObservaciones = function(key){
+        self.customer_observaciones_list.splice(key,1);
+        self.makeTableObservaciones();
+    };
+
+    /* ======================================================================== */
+
+
+
+
     /* ============= SET TABLE FOR REGISTER CUSTOMER COMPANY ============= */
 
     self.saveCustomerCompany = function(){
@@ -1511,12 +1574,6 @@ var travel = function () {
                     </tr>`;
         }
         $("#table_customer_company").append(html);
-    };
-
-    self.saveDescripcion = function(){
-        var descripcion = $('#descripcion').val() || '';
-        console.log(descripcion);
-        self.customer_description = descripcion;
     };
 
     self.saveFamiliar = function(){
@@ -1860,7 +1917,6 @@ var travel = function () {
                     $("#gender").val(data.gender);
                     $("#age").val(data.age);
                     $("#date_expire").val(data.fec_nac);
-                    console.log(data);
                     //MAKE TABLE DOCUMENTS
                     if(data_client != ''){
                         self.customer_documents_list = data_client.documents;
@@ -1895,8 +1951,9 @@ var travel = function () {
                         //MAKE TABLE FAMILIARES
                         self.customer_familiares_list = data_client.familiares;
                         self.makeTableDatosFamilares();
-                        console.log(data_client.description);
-                        $("#descripcion").val(data_client.description);
+                        //MAKE TABLE OBSERVACIONES
+                        self.customer_observaciones_list = data_client.observaciones;
+                        self.makeTableObservaciones();
                     }
                     
                     $("#modal_customer").modal("show");
@@ -1948,6 +2005,9 @@ var travel = function () {
         //MAKE TABLE FAMILIARES
         self.customer_familiares_list = [];
         self.makeTableDatosFamilares();
+        //MAKE TABLE Observaciones
+        self.customer_observaciones_list = [];
+        self.makeTableObservaciones();
     };
 
     self.deleteClient = function(client_id,is_delete){
@@ -1977,5 +2037,5 @@ var travel = function () {
         }
     };
 
-	return self;
+    return self;
 }(jQuery);
