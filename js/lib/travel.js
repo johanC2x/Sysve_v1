@@ -18,20 +18,20 @@ var travel = function () {
         customer_frec_list : [],
         customer_familiares_list: [],
         customer_tarjtas_list: [],
-        customer_observaciones_list: [],
+        customer_description: '',
         action_form: "",
         current_id: 0
     };
 
     self.changeRow = function(idObj){
-        var open = $("#row_travel_"+idObj).is(':visible');
-        if(!open){
-            $("#row_travel_"+idObj).show();
-            $("#row_open_"+idObj).html('<i class="fa fa-angle-down"></i>');
-        }else{
-            $("#row_travel_"+idObj).hide();
-            $("#row_open_"+idObj).html('<i class="fa fa-angle-right"></i>');
-        }
+    	var open = $("#row_travel_"+idObj).is(':visible');
+    	if(!open){
+    		$("#row_travel_"+idObj).show();
+    		$("#row_open_"+idObj).html('<i class="fa fa-angle-down"></i>');
+    	}else{
+    		$("#row_travel_"+idObj).hide();
+    		$("#row_open_"+idObj).html('<i class="fa fa-angle-right"></i>');
+    	}
     };
 
     self.setCustomerFilter = function(){
@@ -692,7 +692,7 @@ var travel = function () {
                         notEmpty: { message: "El campo pasaporte es requerido."}
                     }
                 },
-                date_expire: {
+                user_date: {
                     validators: {
                         notEmpty: { message: "El campo fecha de expiración es requerido."}
                     }
@@ -1439,69 +1439,6 @@ var travel = function () {
 
     /* =================================================================== */
 
-
-    /* ================ SET TABLE FOR OBSERVACIONES ============ */
-
-    self.saveObservaciones = function(){
-        var observaciones = $("#observaciones").val();
-        var fecha = $("#fecha").val();
-        var asesor = $("#asesor").val();
-
-        if(observaciones !== '' && fecha !== '' && asesor !== ''){
-            self.customer_observaciones_list.push({
-                observaciones : observaciones,
-                fecha : fecha,
-                asesor : asesor,
-            });
-
-            $("#observaciones").val("");
-            $("#fecha").val("");
-            $("#asesor").val("");
-
-            self.makeTableObservaciones();
-        }
-    };
-
-    self.makeTableObservaciones = function(){
-        var tbody = '';
-        $("#table_observaciones tbody").empty();
-        if(self.customer_observaciones_list.length > 0){
-            for(var i = 0;i < self.customer_observaciones_list.length; i++){
-                tbody += `<tr>
-                            <td><center>`+ self.customer_observaciones_list[i].observaciones +`</center></td>
-                            <td><center>`+ self.customer_observaciones_list[i].fecha +`</center></td>                            
-                            <td><center>`+ self.customer_observaciones_list[i].asesor +`</center></td>
-                            <td>
-                                <a href="javascript:void(0);" onclick="travel.removeObservaciones(`+i+`);">
-                                    <center>
-                                        <i class="fa fa-trash"></i>
-                                    </center>
-                                </a>
-                            </td>
-                        </tr>`;
-            }
-        }else{
-            tbody += `<tr>
-                        <td colspan="6">
-                            <center>
-                                No se registraron datos.
-                            </center>
-                        </td>
-                    </tr>`;
-        }
-        $("#table_observaciones tbody").append(tbody);
-    };
-
-    self.removeObservaciones = function(key){
-        self.customer_observaciones_list.splice(key,1);
-        self.makeTableObservaciones();
-    };
-
-    /* ======================================================================== */
-
-
-
-
     /* ============= SET TABLE FOR REGISTER CUSTOMER COMPANY ============= */
 
     self.saveCustomerCompany = function(){
@@ -1574,6 +1511,12 @@ var travel = function () {
                     </tr>`;
         }
         $("#table_customer_company").append(html);
+    };
+
+    self.saveDescripcion = function(){
+        var descripcion = $('#descripcion').val() || '';
+        console.log(descripcion);
+        self.customer_description = descripcion;
     };
 
     self.saveFamiliar = function(){
@@ -1709,7 +1652,6 @@ var travel = function () {
             success:function(response){
                 var res = JSON.parse(response);
                 if(res.success){
-                    console.log(res.data[0].data.documents);
                     var tbody = "";
                     var data = res.data;
                     //var data_client = JSON.parse(data.data);
@@ -1720,12 +1662,25 @@ var travel = function () {
                             var nombres = data[i].firstname + ' ' + data[i].middlename;
                             var apellidos = data[i].lastname + ' ' + data[i].mother_lastname;
                             var genero = (data[i].gender === 'M') ? 'MASCULINO' : 'FEMENINO';
+
+                            //BUSCANDO VALORES EN DATA DE CLIENTES
+                            var data_client = JSON.parse(data[i].data);
+                            
+                            var document = data_client.documents.find(x => x.type_document === "dni");
+                            var email = data_client.emails.find(x => x.type_email === "personal");
+                            var phones = data_client.phones.find(x => x.type_phone === "celular_personal");
+                            //VALIDANDO VALORES VACIOS
+                            var val_doc = (document !== undefined && document.nro_doc !== "") ? document.nro_doc : "SIN DOCUMENTO";
+                            var val_email = (email !== undefined && email.email !== "") ? email.email : "FALTA INFORMACION";
+                            var val_phone = (phones !== undefined && phones.nro_phone !== "") ? phones.nro_phone : "FALTA INFORMACION";
+
                             tbody += `<tr>
                                         <td>`+nombres+`</td>
                                         <td>`+apellidos+`</td>
-                                        <td>`+data[i].age+`</td>
+                                        <td>`+val_doc+`</td>
                                         <td>`+genero+`</td>
-                                        <td>`+data[i].fec_nac+`</td>
+                                        <td>`+val_email+`</td>
+                                        <td>`+val_phone+`</td>
                                         <td>
                                             <center>
                                                 <a href="javascript:void(0);" onclick="travel.getClient(`+id+`);">
@@ -1744,7 +1699,7 @@ var travel = function () {
                         }
                     }else{
                         tbody = `<tr>
-                                    <td colspan="6">
+                                    <td colspan="7">
                                         <center>
                                             NO SE ENCONTRARON RESULTADOS
                                         </center>
@@ -1837,7 +1792,6 @@ var travel = function () {
             success:function(response){
                 var res = JSON.parse(response);
                 if(res.success){
-                    console.log(res.data[0].data.documents);
                     var tbody = "";
                     var data = res.data;
                     //var data_client = JSON.parse(data.data);
@@ -1848,16 +1802,25 @@ var travel = function () {
                             var nombres = data[i].firstname + ' ' + data[i].middlename;
                             var apellidos = data[i].lastname + ' ' + data[i].mother_lastname;
                             var genero = (data[i].gender === 'M') ? 'MASCULINO' : 'FEMENINO';
+
+                            //BUSCANDO VALORES EN DATA DE CLIENTES
+                            var data_client = JSON.parse(data[i].data);
+                            
+                            var document = data_client.documents.find(x => x.type_document === "dni");
+                            var email = data_client.emails.find(x => x.type_email === "personal");
+                            var phones = data_client.phones.find(x => x.type_phone === "celular_personal");
+                            //VALIDANDO VALORES VACIOS
+                            var val_doc = (document !== undefined && document.nro_doc !== "") ? document.nro_doc : "SIN DOCUMENTO";
+                            var val_email = (email !== undefined && email.email !== "") ? email.email : "FALTA INFORMACION";
+                            var val_phone = (phones !== undefined && phones.nro_phone !== "") ? phones.nro_phone : "FALTA INFORMACION";
+
                             tbody += `<tr>
                                         <td>`+nombres+`</td>
                                         <td>`+apellidos+`</td>
-                                        <td>`+data[i].age+`</td>
+                                        <td>`+val_doc+`</td>
                                         <td>`+genero+`</td>
-                                        <td>`+data[i].fec_nac+`</td>
-                                        <td>
-                                            <center>
-                                            </center>
-                                        </td>
+                                        <td>`+val_email+`</td>
+                                        <td>`+val_phone+`</td>
                                         <td>
                                             <center>
                                                 <a href="index.php/customers/cotizacion" onclick="travel.addCoti(`+id+`);">
@@ -1916,7 +1879,8 @@ var travel = function () {
                     $("#last_name_casada").val(data.last_name_casada);
                     $("#gender").val(data.gender);
                     $("#age").val(data.age);
-                    $("#date_expire").val(data.fec_nac);
+                    $("#user_date").val(data.fec_nac);
+                    console.log(data);
                     //MAKE TABLE DOCUMENTS
                     if(data_client != ''){
                         self.customer_documents_list = data_client.documents;
@@ -1951,9 +1915,8 @@ var travel = function () {
                         //MAKE TABLE FAMILIARES
                         self.customer_familiares_list = data_client.familiares;
                         self.makeTableDatosFamilares();
-                        //MAKE TABLE OBSERVACIONES
-                        self.customer_observaciones_list = data_client.observaciones;
-                        self.makeTableObservaciones();
+                        console.log(data_client.description);
+                        $("#descripcion").val(data_client.description);
                     }
                     
                     $("#modal_customer").modal("show");
@@ -1971,7 +1934,7 @@ var travel = function () {
         $("#last_name_casada").val("");
         $("#gender").val("");
         $("#age").val("");
-        $("#date_expire").val(now);
+        $("#user_date").val(now);
         //MAKE TABLE DOCUMENTS
         self.customer_documents_list = [];
         self.makeTableDocuments();
@@ -2005,9 +1968,6 @@ var travel = function () {
         //MAKE TABLE FAMILIARES
         self.customer_familiares_list = [];
         self.makeTableDatosFamilares();
-        //MAKE TABLE Observaciones
-        self.customer_observaciones_list = [];
-        self.makeTableObservaciones();
     };
 
     self.deleteClient = function(client_id,is_delete){
@@ -2037,5 +1997,5 @@ var travel = function () {
         }
     };
 
-    return self;
+	return self;
 }(jQuery);
