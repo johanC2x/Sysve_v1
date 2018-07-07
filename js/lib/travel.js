@@ -1860,7 +1860,7 @@ var travel = function () {
                                         </td>
                                         <td>
                                             <center>
-                                                <a href="javascript:void(0);" onclick="travel.addCoti(`+id+`);">
+                                                <a href="index.php/customers/cotizacion" onclick="travel.addCoti(`+id+`);">
                                                     Agregar Cotización
                                                 </a>
                                             </center>
