@@ -109,7 +109,7 @@
             </div>
             <div class="col-md-4">
               <div class="form-group">
-                <label for="date_expire">Fecha de Nacimiento:</label>
+                <label for="user_date">Fecha de Nacimiento:</label>
                 <input type="date" id="user_date" name="user_date" class="form-control"/>
               </div>
             </div>
@@ -240,9 +240,12 @@
                   </div>
                 </div>
                 <div class="col-md-4">
-                  <div class="form-group">
-                    <button id="btn_add_customer_visado" type="button" class="btn btn-primary">Agregar</button>
-                  </div>
+                  <div class="form-group" >
+                    <label for="">&nbsp;</label>
+                        <div class="form-group">
+                            <button id="btn_add_customer_visado" type="button" class="btn btn-primary">Agregar</button>
+                        </div>
+                  </div>  
                 </div>
                 <table id="table_customer_visado" class="table table-hover table-bordered" >
                   <thead>
@@ -288,8 +291,9 @@
                   <label for="customer_phone">Telefono:</label>
                   <input type="text" id="customer_phone" name="customer_phone" class="form-control">
                 </div>
+                  <div class="form-group">
                 <button id="btn_add_customer_phones" type="button" class="btn btn-primary">Agregar</button>
-                <br/>
+                  </div>
                 <table id="table_customer_phones" class="table table-hover table-bordered" >
                   <thead>
                     <tr>
@@ -325,8 +329,9 @@
                   <label for="customer_email">Email:</label>
                   <input type="text" id="customer_email" name="customer_email" class="form-control">
                 </div>
+                  <div class="form-group">
                 <button id="btn_add_customer_emails" type="button" class="btn btn-primary">Agregar</button>
-                <br/>
+                  </div>
                 <table id="table_customer_emails" class="table table-hover table-bordered" >
                   <thead>
                     <tr>
@@ -382,8 +387,9 @@
                     <input type="text" id="end_customer_frec" name="end_customer_frec" class="form-control">
                   </div>
                 </div>
+                  <div class="form-group">
                 <button id="btn_add_customer_frec" type="button" class="btn btn-primary">Agregar</button>
-                <br/>
+                  </div>
                 <table id="table_customer_frec" class="table table-hover table-bordered" >
                   <thead>
                     <tr>
@@ -698,10 +704,13 @@
                     <input type="text" id="contact_familiar_indicaciones" name="contact_familiar_indicaciones" class="form-control">
                   </div>  
                 </div>
-                <div class="col-md-2">
-                  <div class="form-group">
-                    <button id="btn_add_familiares" type="button" class="btn btn-primary">Agregar</button>
-                  </div>
+                <div class="col-md-1">
+                  <div class="form-group" >
+                    <label for="">&nbsp;</label>
+                        <div class="form-group">
+                            <button id="btn_add_familiares" type="button" class="btn btn-primary">Agregar</button>
+                        </div>
+                  </div>  
                 </div>
                 <table id="table_familiares" class="table table-hover table-bordered" >
                   <thead>
@@ -726,59 +735,15 @@
                 </table>
               </fieldset>
             </div>
-            <!-- ===================================== -->
-
-            <!-- =========== FORM OBSERVACIONES ============ -->
             <div class="col-md-12">
               <fieldset>
                 <legend>Observaciones</legend>
-                <div class="col-md-4">
-                  <div class="form-group" >
-                    <label for="observaciones">Comentarios:</label>
-                    <input type="text" id="observaciones" name="observaciones" class="form-control">
-                  </div>
+                <div class="form-group">
+                  <textarea id="descripcion" class="form-control" style="height: 150px;"></textarea>
                 </div>
-                <div class="col-md-4">
-                  <div class="form-group" >
-                    <label for="fecha">Fecha:</label>
-                    <input type="text" id="fecha" name="fecha" class="form-control">
-                  </div>  
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group" >
-                    <label for="asesor">Asesor:</label>
-                    <input type="text" id="asesor" name="asesor" class="form-control">
-                  </div>  
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <button id="btn_add_observaciones" type="button" class="btn btn-primary">Agregar</button>
-                  </div>
-                </div>
-                <table id="table_observaciones" class="table table-hover table-bordered" >
-                  <thead>
-                    <tr>
-                      <th class="col-md-1"><center>Comentario</center></th>
-                      <th class="col-md-4"><center>Fecha</center></th>
-                      <th class="col-md-2"><center>Asesor</center></th>
-                      <th colspan="3" class="col-md-1"><center>Acción</center></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td colspan="4">
-                        <center>
-                          No se registraron datos.
-                        </center>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
               </fieldset>
             </div>
             <!-- ===================================== -->
-
-
             <div id="messages" class="col-md-12"></div>
           </div>
           <button type="submit" class="btn btn-primary">Guardar</button>

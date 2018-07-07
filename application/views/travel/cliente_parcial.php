@@ -1,3 +1,4 @@
+<script src="<?php echo base_url();?>js/lib/cotizacion.js"></script>
 <script type="text/javascript">
 $(document).ready(function() { 
     init_table_sorting();
@@ -150,6 +151,21 @@ $(document).ready(function() {
             notEmpty: { message: "El campo apellidos paterno es requerido"}
           }
       },
+      last_name_mothers:{
+        validators: {
+            notEmpty: { message: "El campo apellidos materno es requerido"}
+          }
+      },
+      last_name_casada:{
+        validators: {
+            notEmpty: { message: "El campo apellido de casada es requerido"}
+          }
+      },
+      age:{
+        validators: {
+            notEmpty: { message: "El campo edad es requerido"}
+          }
+      },
       date_expire:{
         validators: {
           notEmpty: { message: "El campo fecha de nacimiento es requerido"}
@@ -235,7 +251,6 @@ function post_person_form_submit(response)
 
 
 
-
 <div id="modal_customer" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -246,9 +261,9 @@ function post_person_form_submit(response)
       <div class="modal-body">
         <?php echo form_open('customers/saveClientBasico'); ?>
           <div class="row">
-            <div>
+            <div class="col-md-12">
               <fieldset>
-                <legend class="col-md-12" >Documentos</legend>
+                <legend>Documentos</legend>
                 <!-- =========== FORM ADDRESS ============ -->
 
 <div class="col-md-12">
@@ -313,7 +328,6 @@ function post_person_form_submit(response)
                 <input type="text" id="person_id" name="person_id" class="form-control" maxlength="8" />
               </div>
             </div>
-
  <!-- =======DATOS PERSONALES=========== -->
 
 <div class="col-md-12">
@@ -355,7 +369,7 @@ function post_person_form_submit(response)
   </div>
   <div class="col-md-3">
    <div class="form-group">
-                <label for="date_expire">Fecha de Nacimiento:</label>
+                <label for="user_date">Fecha de Nacimiento:</label>
                 <input type="date" id="user_date" name="user_date" class="form-control"/>
               </div>
   </div>
@@ -376,7 +390,8 @@ function post_person_form_submit(response)
 </div>
 <legend class="col-md-12" ></legend>
  <!-- ==========FIN DATOS PERSONALES=========== -->
-  <!-- ==========DATOS DE CONTACTO ============ -->
+
+            <!-- =========== FORM TELEFONOS Y CORREOS ============ -->
 
             <div class="col-md-6">
               <fieldset>
@@ -395,9 +410,9 @@ function post_person_form_submit(response)
                   <label for="customer_phone">Telefono:</label>
                   <input type="text" id="customer_phone" name="customer_phone" class="form-control">
                 </div>
-                <div class="form-group">
-                   <button id="btn_add_customer_phones" type="button" class="btn btn-primary">Agregar</button>
-                </div>
+                  <div class="form-group">
+                <button id="btn_add_customer_phones" type="button" class="btn btn-primary">Agregar</button>
+                  </div>
                 <table id="table_customer_phones" class="table table-hover table-bordered" >
                   <thead>
                     <tr>
@@ -433,9 +448,9 @@ function post_person_form_submit(response)
                   <label for="customer_email">Email:</label>
                   <input type="text" id="customer_email" name="customer_email" class="form-control">
                 </div>
-                <div class="form-group">
-                  <button id="btn_add_customer_emails" type="button" class="btn btn-primary">Agregar</button>
-                </div>
+                  <div class="form-group">
+                <button id="btn_add_customer_emails" type="button" class="btn btn-primary">Agregar</button>
+                  </div>
                 <table id="table_customer_emails" class="table table-hover table-bordered" >
                   <thead>
                     <tr>
@@ -456,52 +471,8 @@ function post_person_form_submit(response)
                 </table>
               </fieldset>
             </div>
-            <!-- ==============FIN DATOS DE CONTACTO============== -->
-
-            <!-- ==============FROM OBSERVACIONES============== -->
-
-            <div class="col-md-12">
-              <fieldset>
-                <legend>Observaciones</legend>
-                  <div class="col-md-10">
-                    <div class="form-group" >
-                      <label for="company_customer_obser">Observaciones:</label>
-                      <textarea type="text" id="company_customer_obser" name="company_customer_obser" class="form-control"></textarea>
-                    </div>  
-                  </div>
-                      <input type="hidden" id="company_customer_obser" name="company_customer_obser" class="form-control"></>
-                      <input type="hidden" id="company_customer_obser" name="company_customer_obser" class="form-control"></>
-                  <div class="col-md-2">
-                    <div class="form-group">
-                            <label for="">&nbsp;</label>
-                        <div class="form-group">
-                            <button id="btn_add_customer_obser" type="button" class="btn btn-primary">Agregar</button>
-                        </div>
-                    </div>
-                  </div>
-                <table id="table_customer_obser" class="table table-hover table-bordered" >
-                  <thead>
-                    <tr>
-                      <th class="col-md-8"><center>Observaciones</center></th>
-                      <th colspan="3" class="col-md-1"><center>Acción</center></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td colspan="8">
-                        <center>
-                          No se registraron datos.
-                        </center>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </fieldset>
-            </div>
             <!-- ===================================== -->
-
-
-
+ 
 
             <!-- =========== FORM DATOS FAMILIARES ============ -->
             <div class="col-md-12">
@@ -521,19 +492,26 @@ function post_person_form_submit(response)
                 </div>
                 <div class="col-md-2">
                   <div class="form-group" >
-                    <label for="contact_familiar_nacim">Fec. Nac.</label>
-                    <input type="date" id="contact_familiar_nacim" name="contact_familiar_nacim" class="form-control">
+                    <label for="contact_familiar_telefono">Teléfono:</label>
+                    <input type="text" id="contact_familiar_telefono" name="contact_familiar_telefono" class="form-control">
                   </div>  
                 </div>
                 <div class="col-md-2">
                   <div class="form-group" >
-                    <label for="contact_familiar_dni">DNI</label>
-                    <input id="contact_familiar_dni" name="contact_familiar_dni" class="form-control">
+                    <label for="contact_familiar_prefasiento">Pref Asiento:</label>
+                    <select id="contact_familiar_prefasiento" name="contact_familiar_prefasiento" class="form-control">
+                      <option value="VENTANA">VENTANA</option>
+                      <option value="PASILLO">PASILLO</option>
+                      <option value="SALIDA DE EMERGENCIA">SALIDA DE EMERGENCIA</option>
+                      <option value="COMPRA DE ASIENTOS">COMPRA DE ASIENTOS</option>
+                      <option value="UPGRADE">UPGRADE</option>
+                      <option value="SILLA DE RUEDAS">SILLA DE RUEDAS</option>
+                    </select>
                   </div>  
                 </div>
                 <div class="col-md-2">
                   <div class="form-group" >
-                    <label for="contact_familiar_indicaciones">Observaciones</label>
+                    <label for="contact_familiar_indicaciones">Indicaciones:</label>
                     <input type="text" id="contact_familiar_indicaciones" name="contact_familiar_indicaciones" class="form-control">
                   </div>  
                 </div>
@@ -550,9 +528,9 @@ function post_person_form_submit(response)
                     <tr>
                       <th class="col-md-2"><center>Relacion</center></th>
                       <th class="col-md-2"><center>Nombre</center></th>
-                      <th class="col-md-2"><center>Fecha de Nacimiento</center></th>
-                      <th class="col-md-2"><center>DNI</center></th>
-                      <th class="col-md-2"><center>Observaciones</center></th>
+                      <th class="col-md-2"><center>Teléfono</center></th>
+                      <th class="col-md-2"><center>Preferencia de Asiento</center></th>
+                      <th class="col-md-2"><center>Indicaciones</center></th>
                       <th class="col-md-2"><center>Acción</center></th>
                     </tr>
                   </thead>
@@ -568,8 +546,15 @@ function post_person_form_submit(response)
                 </table>
               </fieldset>
             </div>
+            <div class="col-md-12">
+              <fieldset>
+                <legend>Observaciones</legend>
+                <div class="form-group">
+                  <textarea id="descripcion" name="descripcion" class="form-control" style="height: 150px;"></textarea>
+                </div>
+              </fieldset>
+            </div>
             <!-- ===================================== -->
-
             <div id="messages" class="col-md-12"></div>
           </div>
           <button type="submit" class="btn btn-primary">Siguiente</button>
@@ -582,9 +567,221 @@ function post_person_form_submit(response)
   </div>
 </div>
 
+<!-- MODAL DE REGISTRO DE VIAJES -->
+<div id="modal_travel" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">REGISTRAR VIAJE</h4>
+      </div>
+      <div class="modal-body">
+        <?php echo form_open('travel/insert_client',array('id'=>'form_travel_register'));?>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Ruc:</label>
+                    <input type="datetime-local" id="ruc_travel" name="ruc_travel" class="form-control"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Razón Social:</label>
+                    <input type="datetime-local" id="razon_social_travel" name="razon_social_travel" class="form-control"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Dirección Fiscal:</label>
+                    <input type="datetime-local" id="direccion_fiscal_travel" name="direccion_fiscal_travel" class="form-control"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Aerolínea:</label>
+                    <input type="datetime-local" id="aerolinea_travel" name="direccion_fiscal_travel" class="form-control"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Código:</label>
+                    <input type="text" name="code_travel" id="code_travel" class="form-control" />
+                    <input type="hidden" id="customer_id" name="customer_id" value="2" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Vuelo:</label>
+                    <input type="text" name="name_travel" id="name_travel" class="form-control" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Desde:</label>
+                    <input type="text" name="destiny_origin_travel" id="destiny_origin_travel" class="form-control" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Hasta:</label>
+                    <input type="text" name="destiny_end_travel" id="destiny_end_travel" class="form-control" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Salida:</label>
+                    <input type="datetime-local" id="date_init_travel" name="date_init_travel" class="form-control"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Llegada:</label>
+                    <input type="datetime-local" id="date_end_travel" name="date_end_travel" class="form-control"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="col-md-4">
+                  <div class="form-group">
+                      <label>Ventana</label>
+                      <input type="text" id="window_travel_detail" name="window_travel_detail" placeholder="" class="form-control">
+                  </div>     
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Pasillo</label>
+                        <input type="text" id="pas_travel_detail" name="pas_travel_detail" placeholder="" class="form-control">
+                    </div>      
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Millaje</label>
+                        <input type="text" id="mill_travel_detail" name="mill_travel_detail" placeholder="" class="form-control">
+                    </div>      
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                 <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Visa</label>
+                        <input type="text" id="visa_travel_detail" name="visa_travel_detail" placeholder="" class="form-control">
+                    </div>      
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Vacuna</label>
+                        <input type="text" id="vacuna_travel_detail" name="vacuna_travel_detail" placeholder="" class="form-control">
+                    </div>      
+                </div>
+              </div>
+            </div>
+            <button id="btn_save_customer" type="submit" class="btn btn-primary" >Siguiente</button>
+        <?php echo form_close();?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="travel.cancelRegisterCustomer();" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
+<script type="text/javascript">
 
+function isValidDate(day,month,year)
 
+{
+    var dteDate;
+    month=month-1;
+    dteDate=new Date(year,month,day);
+    return ((day==dteDate.getDate()) && (month==dteDate.getMonth()) && (year==dteDate.getFullYear()));
+}
 
+function validate_fecha(fecha)
+{
+    var patron=new RegExp("^(19|20)+([0-9]{2})([-])([0-9]{1,2})([-])([0-9]{1,2})$");
+    if(fecha.search(patron)==0)
+    {
+        var values=fecha.split("-");
+        if(isValidDate(values[2],values[1],values[0]))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+function calcularEdad()
+{
+    var fecha=document.getElementById("user_date").value;
+    if(validate_fecha(fecha)==true)
+    {
+        var values=fecha.split("-");
+        var dia = values[2];
+        var mes = values[1];
+        var ano = values[0];
+        var fecha_hoy = new Date();
+        var ahora_ano = fecha_hoy.getYear();
+        var ahora_mes = fecha_hoy.getMonth()+1;
+        var ahora_dia = fecha_hoy.getDate();
+        var edad = (ahora_ano + 1900) - ano;
+        if ( ahora_mes < mes )
+        {
+            edad--;
+        }
+        if ((mes == ahora_mes) && (ahora_dia < dia))
+        {
+            edad--;
+        }
+        if (edad > 1900)
+        {
+            edad -= 1900;
+        }
+        // calculamos los meses
+        var meses=0;
+        if(ahora_mes>mes)
+            meses=ahora_mes-mes;
+        if(ahora_mes<mes)
+            meses=12-(mes-ahora_mes);
+        if(ahora_mes==mes && dia>ahora_dia)
+            meses=11;
+ 
+        // calculamos los dias
+
+        var dias=0;
+        if(ahora_dia>dia)
+            dias=ahora_dia-dia;
+        if(ahora_dia<dia)
+        {
+            ultimoDiaMes=new Date(ahora_ano, ahora_mes, 0);
+            dias=ultimoDiaMes.getDate()-(dia-ahora_dia);
+        }
+ 
+        document.getElementById("result").innerHTML=""+edad+" años";
+    }else{
+        document.getElementById("result").innerHTML="La fecha "+fecha+" es incorrecta";
+    }
+}
+</script>
 
 
